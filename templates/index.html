@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Interview Coach</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         MAIN CONTAINER
+    ====================================================== -->
+
+    <div class="container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="header">
+
+            <div class="logo">
+
+                <div class="logo-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h1>
+                        AI Interview Coach
+                    </h1>
+
+                    <p>
+                        Practice smarter. Interview better.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             START SCREEN
+        ================================================== -->
+
+        <section
+            id="startScreen"
+            class="card start-card"
+        >
+
+            <div class="hero-icon">
+                🎯
+            </div>
+
+            <h2>
+                Prepare for Your Next Interview
+            </h2>
+
+            <p class="description">
+
+                Practice technical interview questions,
+                receive AI-powered feedback, and improve
+                your answers with personalized suggestions.
+
+            </p>
+
+
+            <!-- JOB ROLE -->
+
+            <div class="form-group">
+
+                <label for="role">
+
+                    Select Job Role
+
+                </label>
+
+                <select id="role">
+
+                    <option value="">
+
+                        -- Select a Role --
+
+                    </option>
+
+                    {% for role in roles %}
+
+                    <option value="{{ role }}">
+
+                        {{ role }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- NUMBER OF QUESTIONS -->
+
+            <div class="form-group">
+
+                <label for="questionCount">
+
+                    Number of Questions
+
+                </label>
+
+                <select id="questionCount">
+
+                    <option value="5">
+                        5 Questions
+                    </option>
+
+                    <option value="10">
+                        10 Questions
+                    </option>
+
+                    <option value="15">
+                        15 Questions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- START BUTTON -->
+
+            <button
+                id="startBtn"
+                class="primary-btn"
+            >
+
+                🚀 Start Interview
+
+            </button>
+
+
+            <p
+                id="startError"
+                class="error-message"
+            ></p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             INTERVIEW SCREEN
+        ================================================== -->
+
+        <section
+            id="interviewScreen"
+            class="hidden"
+        >
+
+
+            <!-- PROGRESS -->
+
+            <div class="progress-container">
+
+                <div class="progress-info">
+
+                    <span>
+
+                        Question
+                        <span id="currentQuestion">
+                            1
+                        </span>
+                        of
+                        <span id="totalQuestions">
+                            5
+                        </span>
+
+                    </span>
+
+
+                    <span>
+
+                        <span id="roleDisplay">
+                            AI/ML Engineer
+                        </span>
+
+                    </span>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <div
+                        id="progressFill"
+                        class="progress-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- QUESTION CARD -->
+
+            <div class="card question-card">
+
+                <div class="question-number">
+
+                    QUESTION
+                    <span id="questionNumber">
+                        1
+                    </span>
+
+                </div>
+
+
+                <h2 id="questionText">
+
+                    Loading question...
+
+                </h2>
+
+
+                <!-- ANSWER -->
+
+                <div class="answer-section">
+
+                    <label for="answer">
+
+                        Your Answer
+
+                    </label>
+
+
+                    <textarea
+                        id="answer"
+                        rows="8"
+                        placeholder="Type your answer here..."
+                    ></textarea>
+
+
+                    <div class="answer-info">
+
+                        <span>
+
+                            💡 Try to explain the concept
+                            clearly and give an example.
+
+                        </span>
+
+                        <span>
+
+                            <span id="wordCount">
+                                0
+                            </span>
+                            words
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    id="submitBtn"
+                    class="primary-btn"
+                >
+
+                    🧠 Evaluate My Answer
+
+                </button>
+
+
+                <p
+                    id="answerError"
+                    class="error-message"
+                ></p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FEEDBACK
+            ================================================== -->
+
+            <div
+                id="feedback"
+                class="hidden"
+            >
+
+
+                <!-- SCORE CARD -->
+
+                <div class="card score-card">
+
+                    <div class="score-circle">
+
+                        <span id="score">
+                            0
+                        </span>
+
+                        <small>
+                            /100
+                        </small>
+
+                    </div>
+
+
+                    <div class="score-content">
+
+                        <h2>
+                            Your Score
+                        </h2>
+
+                        <p id="feedbackText">
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     SCORE BREAKDOWN
+                ================================================== -->
+
+                <div class="card">
+
+                    <h3 class="section-title">
+
+                        📊 Answer Analysis
+
+                    </h3>
+
+
+                    <div class="analysis-grid">
+
+
+                        <div class="analysis-item">
+
+                            <div class="analysis-icon">
+                                🔑
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Keywords
+                                </span>
+
+                                <strong id="keywordScore">
+                                    0%
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="analysis-item">
+
+                            <div class="analysis-icon">
+                                🧠
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Relevance
+                                </span>
+
+                                <strong id="similarityScore">
+                                    0%
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="analysis-item">
+
+                            <div class="analysis-icon">
+                                📝
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Answer Quality
+                                </span>
+
+                                <strong id="lengthScore">
+                                    0%
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STRENGTHS / WEAKNESSES
+                ================================================== -->
+
+                <div class="feedback-grid">
+
+
+                    <!-- STRENGTHS -->
+
+                    <div class="card feedback-card strengths-card">
+
+                        <h3>
+
+                            ✅ Strengths
+
+                        </h3>
+
+
+                        <ul id="strengths">
+
+                        </ul>
+
+                    </div>
+
+
+
+                    <!-- WEAKNESSES -->
+
+                    <div class="card feedback-card weaknesses-card">
+
+                        <h3>
+
+                            ⚠️ Areas to Improve
+
+                        </h3>
+
+
+                        <ul id="weaknesses">
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     MATCHED KEYWORDS
+                ================================================== -->
+
+                <div class="card">
+
+                    <h3 class="section-title">
+
+                        🔑 Concepts You Covered
+
+                    </h3>
+
+
+                    <div
+                        id="matchedKeywords"
+                        class="keyword-container"
+                    >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     MISSING KEYWORDS
+                ================================================== -->
+
+                <div class="card">
+
+                    <h3 class="section-title">
+
+                        📚 Concepts to Review
+
+                    </h3>
+
+
+                    <div
+                        id="missingKeywords"
+                        class="keyword-container"
+                    >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PERFECT ANSWER
+                ================================================== -->
+
+                <div class="card perfect-answer">
+
+                    <div class="perfect-title">
+
+                        <span>
+                            ⭐
+                        </span>
+
+                        <div>
+
+                            <h3>
+                                Perfect Answer
+                            </h3>
+
+                            <p>
+                                Use this as a reference to improve
+                                your interview response.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="perfectAnswer"
+                        class="perfect-answer-content"
+                    >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     ACTION BUTTONS
+                ================================================== -->
+
+                <div class="action-buttons">
+
+
+                    <button
+                        id="nextBtn"
+                        class="primary-btn"
+                    >
+
+                        Next Question →
+
+                    </button>
+
+
+                    <button
+                        id="finishBtn"
+                        class="secondary-btn"
+                    >
+
+                        Finish Interview
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FINAL RESULT SCREEN
+        ================================================== -->
+
+        <section
+            id="resultScreen"
+            class="hidden"
+        >
+
+            <div class="card result-card">
+
+                <div class="result-icon">
+
+                    🏆
+
+                </div>
+
+
+                <h2>
+
+                    Interview Completed!
+
+                </h2>
+
+
+                <p>
+
+                    Here is your overall interview performance.
+
+                </p>
+
+
+                <!-- FINAL SCORE -->
+
+                <div class="final-score">
+
+                    <span id="finalScore">
+
+                        0
+
+                    </span>
+
+                    <small>
+                        /100
+                    </small>
+
+                </div>
+
+
+                <!-- RESULT MESSAGE -->
+
+                <h3 id="resultMessage">
+
+                    Good Job!
+
+                </h3>
+
+
+                <!-- FINAL STATS -->
+
+                <div class="final-stats">
+
+
+                    <div>
+
+                        <strong id="answeredCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Questions
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong id="averageScore">
+                            0
+                        </strong>
+
+                        <span>
+                            Average Score
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong id="bestScore">
+                            0
+                        </strong>
+
+                        <span>
+                            Best Score
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESTART -->
+
+                <button
+                    id="restartBtn"
+                    class="primary-btn"
+                >
+
+                    🔄 Start New Interview
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LOADING
+        ================================================== -->
+
+        <div
+            id="loading"
+            class="loading hidden"
+        >
+
+            <div class="spinner"></div>
+
+            <p>
+                AI is analyzing your answer...
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer>
+
+            <p>
+
+                🤖 AI Interview Coach
+
+                <span>•</span>
+
+                Built with Python & Flask
+
+            </p>
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+    ></script>
+
+
+</body>
+
+</html>
